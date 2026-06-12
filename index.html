@@ -157,6 +157,9 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
             <label>Close view hold seconds
               <input id="closeHoldSeconds" type="number" step="1" min="4" max="30">
             </label>
+            <label>Far-out amount
+              <input id="overviewZoomOut" type="number" step="0.1" min="0" max="3">
+            </label>
           </div>
         </details>
         <details open>
@@ -192,7 +195,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
 </div>
 
 <script>
-const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v20","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
+const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v21","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16,"overviewZoomOut":0.35}};
 
 const state = {
   data: structuredClone(DEFAULT_DATA),
@@ -211,7 +214,7 @@ const logoImage = new Image();
 logoImage.src = LOGO_DATA_URI;
 
 const el = {};
-const ids = ["dashCanvas","mainTitle","rtzInput","fitBtn","worldBtn","darkBtn","lightBtn","pngBtn","videoBtn","vessel","title","from","to","dateLT","timeLT","lat","lon","cog","sog","hdg","avgSog","summaryText","closeZoomEnabled","closeZoomLevel","closeHoldSeconds","etaEnabled","manualEta","metricsEnabled","manualSailed","manualToGo","manualTotal","manualProgress","applyBtn","saveBtn","recordProgress","recordText","recordTime","recordBar"];
+const ids = ["dashCanvas","mainTitle","rtzInput","fitBtn","worldBtn","darkBtn","lightBtn","pngBtn","videoBtn","vessel","title","from","to","dateLT","timeLT","lat","lon","cog","sog","hdg","avgSog","summaryText","closeZoomEnabled","closeZoomLevel","closeHoldSeconds","overviewZoomOut","etaEnabled","manualEta","metricsEnabled","manualSailed","manualToGo","manualTotal","manualProgress","applyBtn","saveBtn","recordProgress","recordText","recordTime","recordBar"];
 for (const id of ids) el[id] = document.getElementById(id);
 
 const ctx = el.dashCanvas.getContext("2d");
@@ -324,6 +327,7 @@ function applyForm() {
   d.animation.closeZoomEnabled = el.closeZoomEnabled.checked;
   d.animation.closeZoomLevel = clamp(num(el.closeZoomLevel.value, d.animation.closeZoomLevel || 6.2), 3, 8.5);
   d.animation.closeHoldSeconds = clamp(num(el.closeHoldSeconds.value, d.animation.closeHoldSeconds || 16), 4, 30);
+  d.animation.overviewZoomOut = clamp(num(el.overviewZoomOut.value, d.animation.overviewZoomOut ?? 0.35), 0, 3);
   d.manual.etaEnabled = el.etaEnabled.checked;
   d.manual.eta = el.manualEta.value ? el.manualEta.value.replace("T"," ") : "";
   d.manual.metricsEnabled = el.metricsEnabled.checked;
@@ -342,10 +346,11 @@ function fillForm() {
   el.lat.value = fmtLat(d.position.lat); el.lon.value = fmtLon(d.position.lon);
   el.cog.value = d.navigation.cog; el.sog.value = d.navigation.sog; el.hdg.value = d.navigation.hdg; el.avgSog.value = d.navigation.avgSog;
   el.summaryText.value = d.summary || "";
-  d.animation = d.animation || {closeZoomEnabled:true, closeZoomLevel:6.2, closeHoldSeconds:16};
+  d.animation = d.animation || {closeZoomEnabled:true, closeZoomLevel:6.2, closeHoldSeconds:16, overviewZoomOut:0.35};
   el.closeZoomEnabled.checked = d.animation.closeZoomEnabled !== false;
   el.closeZoomLevel.value = d.animation.closeZoomLevel ?? 6.2;
   el.closeHoldSeconds.value = d.animation.closeHoldSeconds ?? 16;
+  el.overviewZoomOut.value = d.animation.overviewZoomOut ?? 0.35;
   el.etaEnabled.checked = !!d.manual.etaEnabled;
   el.manualEta.value = toDatetimeLocal(d.manual.eta || state.metrics.eta);
   el.metricsEnabled.checked = !!d.manual.metricsEnabled;
@@ -891,7 +896,13 @@ function fitRouteViewObject(padding = 110) {
 
 function wideRouteViewObject() {
   const fit = fitRouteViewObject(70);
-  const z = clamp(fit.zoom - 0.35, 1.55, 6.0);
+  const zoomOut = clamp(Number(state.data.animation?.overviewZoomOut ?? 0.35), 0, 3);
+
+  // Higher Far-out amount = wider overview.
+  // 0.0 = almost same as Fit Route
+  // 0.5 = normal
+  // 1.5+ = much farther out
+  const z = clamp(fit.zoom - zoomOut, 1.05, 6.0);
   const factor = Math.pow(2, z - fit.zoom);
   return {zoom:z, cx:fit.cx * factor, cy:fit.cy * factor};
 }
@@ -1039,7 +1050,7 @@ function loadFromLocalStorage() {
     const s=localStorage.getItem(voyage-view-fast-v20-data);
     if(!s) return;
     const saved=JSON.parse(s);
-    if(saved.appVersion !== "v20") return;
+    if(saved.appVersion !== "v21") return;
     state.data=saved;
   } catch(e){}
 }
