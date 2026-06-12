@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.cirm.org/RTZ/1/0" version="1.0">
+  <routeInfo routeName="Uaru Field Guyana - Las Palmas" />
+  <waypoints>
+    <waypoint id="2" revision="1086" radius="0">
+      <position lat="7.956464" lon="-56.916364" />
+    </waypoint>
+    <waypoint id="11" revision="0" radius="0">
+      <position lat="7.968903" lon="-56.896033" />
+      <leg starboardXTD="0.6" portsideXTD="0.6" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="12" revision="0" radius="0">
+      <position lat="8.123021" lon="-56.840899" />
+      <leg starboardXTD="0.6" portsideXTD="0.6" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="13" revision="0" name="Buoy" radius="0">
+      <position lat="11.936551" lon="-49.065186" />
+      <leg starboardXTD="0.6" portsideXTD="0.6" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="1" revision="33" name="Las Palmas Coast" radius="0.2">
+      <position lat="27.699771" lon="-15.30229" />
+      <leg starboardXTD="0.6" portsideXTD="0.6" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="5" revision="423" radius="0.2">
+      <position lat="27.790994" lon="-15.263451" />
+      <leg starboardXTD="0.3" portsideXTD="0.3" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="3" revision="0" radius="0.2">
+      <position lat="27.99901" lon="-15.272485" />
+      <leg starboardXTD="0.25" portsideXTD="0.25" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="4" revision="0" radius="0.2">
+      <position lat="28.095538" lon="-15.353137" />
+      <leg starboardXTD="0.2" portsideXTD="0.2" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="6" revision="1" name="Pilot" radius="0.01">
+      <position lat="28.113942" lon="-15.383892" />
+      <leg starboardXTD="0.15" portsideXTD="0.15" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="7" revision="0" radius="0.01">
+      <position lat="28.11415" lon="-15.405577" />
+      <leg starboardXTD="0.08" portsideXTD="0.08" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="8" revision="0" radius="0.01">
+      <position lat="28.116801" lon="-15.409253" />
+      <leg starboardXTD="0.08" portsideXTD="0.08" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="9" revision="77" radius="0">
+      <position lat="28.123519" lon="-15.409863" />
+      <leg starboardXTD="0.08" portsideXTD="0.08" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+    <waypoint id="10" revision="110" radius="0">
+      <position lat="28.130027" lon="-15.410924" />
+      <leg starboardXTD="0.05" portsideXTD="0.05" geometryType="Loxodrome" speedMin="1" speedMax="16" />
+    </waypoint>
+  </waypoints>
+  <schedules>
+    <schedule id="1" name="CalculatedSchedule">
+      <calculated>
+        <sheduleElement waypointId="11" speed="12" />
+        <sheduleElement waypointId="12" speed="12" />
+        <sheduleElement waypointId="13" speed="12" />
+        <sheduleElement waypointId="1" speed="12" />
+        <sheduleElement waypointId="5" speed="12" />
+        <sheduleElement waypointId="3" speed="12" />
+        <sheduleElement waypointId="4" speed="12" />
+        <sheduleElement waypointId="6" speed="12" />
+        <sheduleElement waypointId="7" speed="10" />
+        <sheduleElement waypointId="8" speed="8" />
+        <sheduleElement waypointId="9" speed="5" />
+        <sheduleElement waypointId="10" speed="5" />
+      </calculated>
+    </schedule>
+  </schedules>
+</route>

@@ -1,0 +1,44 @@
+{
+  "vessel": "NORMAND MAXIMUS",
+  "voyageTitle": "Voyage Update",
+  "from": "Uaru Field, Guyana",
+  "to": "Las Palmas, Gran Canaria",
+  "dateLT": "2026-06-11",
+  "timeLT": "00:00",
+  "timezoneLabel": "LT",
+  "currentPosition": {
+    "lat": 10.013333,
+    "lon": -53.003333,
+    "latDisplay": "N10\u00b000.8'",
+    "lonDisplay": "W053\u00b000.2'"
+  },
+  "navigation": {
+    "cog": 68,
+    "sog": 12.0,
+    "hdg": 70,
+    "avgSog": 12.0
+  },
+  "manualOverrides": {
+    "etaEnabled": false,
+    "etaLT": "",
+    "metricsEnabled": false,
+    "distanceSailedNm": null,
+    "distanceToGoNm": null,
+    "totalDistanceNm": null,
+    "progressPct": null
+  },
+  "metrics": {
+    "distanceSailedNm": 0,
+    "distanceToGoNm": 0,
+    "totalDistanceNm": 0,
+    "progressPct": 0
+  },
+  "eta": {
+    "etaLT": "\u2014",
+    "daysToGo": 0
+  },
+  "display": {
+    "videoDurationSeconds": 60,
+    "mapDefault": "dark"
+  }
+}
