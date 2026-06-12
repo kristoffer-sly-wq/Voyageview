@@ -1,24 +1,19 @@
-# Voyage View Fast Canvas V6
+# Voyage View Fast Canvas V7
 
-V6 adds proper close zoom again, but makes it safe for route visibility.
-
-Changes:
-- Added editable Video animation settings:
-  - Use close zoom during video
-  - Close zoom level
-  - Close view hold seconds
-- Close zoom centers on the active RTZ route segment, not only the ship position.
-- Strong local route tangent is drawn through the projected position, so the route remains visible even at close coastal zoom.
-- Still keeps ETA / position / distance panels visible from second 0.
-- Editable summary text remains.
-
-Recommended settings:
-- Offshore crossing: close zoom level 5.5–6.2
-- Coastal voyage: close zoom level 6.5–7.8
-- Port approach / short route: close zoom level 7.5–8.5
+Fixes from V6:
+- Fixed disappearing route line.
+- The old code broke the route when screen distance between waypoints was large.
+- That was meant to prevent dateline/world-wrap drawing, but it incorrectly broke long ocean legs.
+- V7 now draws the RTZ route continuously.
+- Remaining route line is stronger.
+- Full route centerline is drawn after sailed/remaining so it remains visible at close zoom.
+- Close zoom settings and editable summary remain.
 
 Upload only:
 - index.html
 - README.md optional
 
-After upload, hard refresh with Ctrl + F5.
+After upload:
+1. Wait for GitHub Pages deployment.
+2. Open the site.
+3. Press Ctrl + F5.
