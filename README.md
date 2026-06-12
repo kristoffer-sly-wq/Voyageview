@@ -1,14 +1,21 @@
-# Voyage View Fast Canvas V4
+# Voyage View Fast Canvas V6
 
-Fixes from V3:
-- Removed the `13 WPT · 0 NM` text.
-- Uses a new localStorage key so old broken cached values do not carry over.
-- Starts video from route overview instead of the whole world.
-- Route remains visible during close zoom.
-- Zoom is less aggressive and smoother.
-- Route draws in the first 8 seconds.
-- ETA / position / distance panels stay visible from second 0.
+V6 adds proper close zoom again, but makes it safe for route visibility.
+
+Changes:
+- Added editable Video animation settings:
+  - Use close zoom during video
+  - Close zoom level
+  - Close view hold seconds
+- Close zoom centers on the active RTZ route segment, not only the ship position.
+- Strong local route tangent is drawn through the projected position, so the route remains visible even at close coastal zoom.
+- Still keeps ETA / position / distance panels visible from second 0.
 - Editable summary text remains.
+
+Recommended settings:
+- Offshore crossing: close zoom level 5.5–6.2
+- Coastal voyage: close zoom level 6.5–7.8
+- Port approach / short route: close zoom level 7.5–8.5
 
 Upload only:
 - index.html
