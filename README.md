@@ -1,13 +1,14 @@
-# Voyage View Fast Canvas V7
+# Voyage View Fast Canvas V8
 
-Fixes from V6:
-- Fixed disappearing route line.
-- The old code broke the route when screen distance between waypoints was large.
-- That was meant to prevent dateline/world-wrap drawing, but it incorrectly broke long ocean legs.
-- V7 now draws the RTZ route continuously.
-- Remaining route line is stronger.
-- Full route centerline is drawn after sailed/remaining so it remains visible at close zoom.
-- Close zoom settings and editable summary remain.
+Fixes from V7:
+- Adds visible markers for every RTZ waypoint.
+- Adds waypoint names/numbers so you can confirm every waypoint is loaded.
+- Named waypoints such as Buoy are highlighted.
+- Start and finish still remain visible.
+- Added Map display settings:
+  - Show all RTZ waypoint markers
+  - Show waypoint labels / numbers
+- Keeps route fix, close zoom settings, and editable summary.
 
 Upload only:
 - index.html
@@ -15,5 +16,6 @@ Upload only:
 
 After upload:
 1. Wait for GitHub Pages deployment.
-2. Open the site.
-3. Press Ctrl + F5.
+2. Hard refresh with Ctrl + F5.
+3. Click Fit Route.
+4. Confirm all waypoints are visible.
