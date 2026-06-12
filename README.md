@@ -1,15 +1,22 @@
-# Voyage View Fast Canvas V21 — Far-Out Zoom Control
+# Voyage View Fast Canvas V23 — Strong Close Zoom
 
-Changes from V20:
-- Added a new video animation setting: Far-out amount
-- You can now control how far out the video starts / overview view is
-- Close zoom level still controls how close the current-position section gets
+Fixes from V22:
+- Close zoom amount now works the same way as Far-out amount.
+- Close zoom amount is now relative to Fit Route.
+- Added Preview Close button.
 
-How to use:
-- Far-out amount 0.0 = close to Fit Route
-- Far-out amount 0.5 = normal
-- Far-out amount 1.0 = wider
-- Far-out amount 1.5–3.0 = very far out
+Scale:
+- 0.0 = Fit Route
+- 1.0 = about 2x closer
+- 2.0 = about 4x closer
+- 3.0 = about 8x closer
+- 4.0–5.0 = very close
+
+Workflow:
+1. Change Far-out amount / Close zoom amount.
+2. Click Apply update.
+3. Click Preview Overview or Preview Close.
+4. Generate video.
 
 Upload only:
 - index.html
