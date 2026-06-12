@@ -192,7 +192,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
 </div>
 
 <script>
-const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v14","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
+const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v15","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
 
 const state = {
   data: structuredClone(DEFAULT_DATA),
@@ -529,15 +529,53 @@ function drawGraticule(a) {
   ctx.restore();
 }
 
+
+function routePalette() {
+  // Strong contrast for both bright day map tiles and dark/night map tiles.
+  if (state.mapStyle === "light") {
+    return {
+      full: "rgba(4, 22, 38, .56)",
+      remaining: "#0068ff",
+      remainingHalo: "rgba(255,255,255,.95)",
+      sailed: "#a85f00",
+      sailedHalo: "rgba(255,255,255,.95)",
+      center: "rgba(0, 18, 36, .92)",
+      activeOuter: "rgba(0, 18, 36, .92)",
+      activeInner: "#0068ff"
+    };
+  }
+  return {
+    full: "rgba(255,255,255,.30)",
+    remaining: "#70dfff",
+    remainingHalo: "rgba(3,10,18,.94)",
+    sailed: "#d9b45d",
+    sailedHalo: "rgba(3,10,18,.94)",
+    center: "rgba(234,244,255,.82)",
+    activeOuter: "rgba(255,255,255,.82)",
+    activeInner: "rgba(112,223,255,.70)"
+  };
+}
+
 function drawRouteLines(a, routeT) {
   const pts = routePts();
   const split = splitRoute();
-  strokeRoute(pts, a, "rgba(255,255,255,.24)", 9, []);
-  strokeRoute(split.remaining, a, "#70dfff", 6, [18,14]);
+  const palette = routePalette();
+
+  // Full route shadow/halo
+  strokeRoute(pts, a, palette.full, 11, []);
+
+  // Remaining route: halo underneath + strong dashed line above.
+  strokeRoute(split.remaining, a, palette.remainingHalo, 8.5, [18,14]);
+  strokeRoute(split.remaining, a, palette.remaining, 5.5, [18,14]);
+
   const animatedSailed = trimRoute(split.sailed, routeT);
-  strokeRoute(animatedSailed, a, "#d9b45d", 8, []);
-  // Fine continuous centerline only — clean, no fake tangent.
-  strokeRoute(pts, a, "rgba(234,244,255,.70)", 2.2, []);
+
+  // Sailed route: halo underneath + strong solid line above.
+  strokeRoute(animatedSailed, a, palette.sailedHalo, 9.5, []);
+  strokeRoute(animatedSailed, a, palette.sailed, 6.5, []);
+
+  // Fine continuous centerline for route readability.
+  strokeRoute(pts, a, palette.center, 2.4, []);
   drawActiveSegment(a);
 
   // current ship marker always visible, with a connector to the projected point on route.
@@ -598,12 +636,11 @@ function drawActiveSegment(a) {
   const m = state.metrics?.projection;
   if (!m || !pts[m.segmentIndex] || !pts[m.segmentIndex+1]) return;
 
+  const palette = routePalette();
   const seg = [pts[m.segmentIndex], pts[m.segmentIndex+1]];
 
-  // This draws the actual RTZ segment through the viewport, even when the segment
-  // endpoints are outside the map frame. No fake line is added.
-  strokeRoute(seg, a, "rgba(255,255,255,.82)", 4.2, []);
-  strokeRoute(seg, a, "rgba(112,223,255,.70)", 2.4, []);
+  strokeRoute(seg, a, palette.activeOuter, 4.8, []);
+  strokeRoute(seg, a, palette.activeInner, 2.8, []);
 }
 
 function drawPanels() {
@@ -627,8 +664,8 @@ function drawPanels() {
   ctx.fillStyle="#d9b45d"; ctx.font="900 17px Segoe UI, Arial"; ctx.fillText("ESTIMATED ARRIVAL", a.x+42,y+36);
   ctx.fillStyle="#eaf4ff"; ctx.font="900 38px Segoe UI, Arial"; ctx.fillText(String(m.eta).replace(" "," · "), a.x+42,y+88);
   ctx.fillStyle="#9fb7d0"; ctx.font="700 22px Segoe UI, Arial"; ctx.fillText(`${m.days} days to go`, a.x+42,y+126);
-  progressBar(a.x+42,y+148,450,18,m.progress/100);
-  ctx.fillStyle="#eaf4ff"; ctx.font="900 22px Segoe UI, Arial"; ctx.fillText(`${Math.round(m.progress)}% completed`, a.x+42,y+184);
+  progressBar(a.x+42,y+140,450,18,m.progress/100);
+  ctx.fillStyle="#eaf4ff"; ctx.font="900 22px Segoe UI, Arial"; ctx.fillText(`${Math.round(m.progress)}% completed`, a.x+42,y+176);
 
   y+=220;
   roundRect(a.x+18,y,520,142,18,"rgba(10,27,49,.94)","rgba(255,255,255,.08)");
@@ -880,8 +917,38 @@ function roundRect(x,y,w,h,r,fill,stroke) { roundPath(x,y,w,h,r); ctx.fillStyle=
 function roundPath(x,y,w,h,r) { ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 function roundClip(x,y,w,h,r) { ctx.save(); roundPath(x,y,w,h,r); ctx.clip(); }
 function glow(x,y,r,c) { const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,c); g.addColorStop(1,"rgba(0,0,0,0)"); ctx.fillStyle=g; ctx.fillRect(x-r,y-r,r*2,r*2); }
-function label(x,y,t,s) { ctx.fillStyle="#eaf4ff"; ctx.font="900 17px Segoe UI,Arial"; ctx.fillText(t,x,y); ctx.fillStyle="#9fb7d0"; ctx.font="700 16px Segoe UI,Arial"; ctx.fillText(s,x,y+22); }
-function pointLabel(p,t) { ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(p.x,p.y,6,0,Math.PI*2); ctx.fill(); ctx.fillStyle="#eaf4ff"; ctx.font="900 15px Segoe UI,Arial"; ctx.fillText(t,p.x+10,p.y-8); }
+function label(x,y,t,s) {
+  ctx.save();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = state.mapStyle === "light" ? "rgba(255,255,255,.95)" : "rgba(3,10,18,.95)";
+  ctx.fillStyle = state.mapStyle === "light" ? "#051629" : "#eaf4ff";
+  ctx.font="900 17px Segoe UI,Arial";
+  ctx.strokeText(t,x,y);
+  ctx.fillText(t,x,y);
+
+  ctx.lineWidth = 3;
+  ctx.fillStyle = state.mapStyle === "light" ? "#123049" : "#9fb7d0";
+  ctx.font="700 16px Segoe UI,Arial";
+  ctx.strokeText(s,x,y+22);
+  ctx.fillText(s,x,y+22);
+  ctx.restore();
+}
+function pointLabel(p,t) {
+  ctx.fillStyle="#fff";
+  ctx.beginPath(); ctx.arc(p.x,p.y,6,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle = "rgba(3,10,18,.90)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.save();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = state.mapStyle === "light" ? "rgba(255,255,255,.95)" : "rgba(3,10,18,.95)";
+  ctx.fillStyle = state.mapStyle === "light" ? "#051629" : "#eaf4ff";
+  ctx.font="900 15px Segoe UI,Arial";
+  ctx.strokeText(t,p.x+10,p.y-8);
+  ctx.fillText(t,p.x+10,p.y-8);
+  ctx.restore();
+}
 function progressBar(x,y,w,h,r) { roundRect(x,y,w,h,h/2,"rgba(255,255,255,.10)",""); const g=ctx.createLinearGradient(x,y,x+w,y); g.addColorStop(0,"#d9b45d"); g.addColorStop(1,"#70dfff"); roundRect(x,y,Math.max(h,w*clamp(r,0,1)),h,h/2,g,""); }
 function wrapText(text,x,y,maxWidth,lineHeight) { const words=text.split(" "); let line=""; for(const word of words){ const test=line+word+" "; if(ctx.measureText(test).width>maxWidth&&line){ctx.fillText(line,x,y); line=word+" "; y+=lineHeight;} else line=test; } ctx.fillText(line,x,y); }
 function parseCoord(v,axis) { const s=String(v).trim().toUpperCase().replace(",","."); const hemi=(s.match(/[NSEW]/)||[""])[0]; const nums=(s.match(/-?\d+(?:\.\d+)?/g)||[]).map(Number); if(!nums.length)return NaN; let res; if(nums.length>=2&&/[°'′]/.test(s))res=Math.abs(nums[0])+nums[1]/60; else res=Math.abs(nums[0]); if(nums[0]<0)res*=-1; if(hemi==="S"||hemi==="W")res=-Math.abs(res); if(hemi==="N"||hemi==="E")res=Math.abs(res); return axis==="lat"?clamp(res,-90,90):normLon(res); }
@@ -898,13 +965,13 @@ function normLon(lon) { while(lon>180)lon-=360; while(lon<-180)lon+=360; return 
 function shortLon(a,b) { let d=b-a; while(d>180)d-=360; while(d<-180)d+=360; return d; }
 function safe(s) { return String(s||"voyage").replace(/[^a-z0-9_-]+/gi,"_").replace(/^_+|_+$/g,""); }
 function downloadFile(content,name,type) { const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a"); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url); }
-function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v14-data", JSON.stringify(state.data)); }
+function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v15-data", JSON.stringify(state.data)); }
 function loadFromLocalStorage() {
   try {
-    const s=localStorage.getItem("voyage-view-fast-v14-data");
+    const s=localStorage.getItem("voyage-view-fast-v15-data");
     if(!s) return;
     const saved=JSON.parse(s);
-    if(saved.appVersion !== "v14") return;
+    if(saved.appVersion !== "v15") return;
     state.data=saved;
   } catch(e){}
 }
