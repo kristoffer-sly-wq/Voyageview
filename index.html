@@ -192,7 +192,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
 </div>
 
 <script>
-const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v15","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
+const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v17","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
 
 const state = {
   data: structuredClone(DEFAULT_DATA),
@@ -453,6 +453,15 @@ function drawHeader() {
   ctx.fillText("NORMAND MAXIMUS — VOYAGE UPDATE", 116, 92);
 }
 
+
+function mapChip(x,y,w,h) {
+  const fill = state.mapStyle === "light" ? "rgba(8,21,38,.68)" : "rgba(8,21,38,.58)";
+  const stroke = state.mapStyle === "light" ? "rgba(255,255,255,.18)" : "rgba(255,255,255,.12)";
+  roundRect(x,y,w,h,14,fill,stroke);
+}
+function mapTextFill() { return state.mapStyle === "light" ? "#ffffff" : "#eaf4ff"; }
+function mapTextSubFill() { return state.mapStyle === "light" ? "#d8e6f4" : "#b9cde2"; }
+
 function drawMap(routeT) {
   const a = mapArea();
   roundRect(a.x-10,a.y-10,a.w+20,a.h+20,26,"rgba(8,21,38,.96)","rgba(128,171,220,.22)");
@@ -461,8 +470,18 @@ function drawMap(routeT) {
   drawGraticule(a);
   drawRouteLines(a, routeT);
   ctx.restore();
-  ctx.fillStyle = "#eaf4ff"; ctx.font = "900 26px Segoe UI, Arial"; ctx.fillText("Route Map", a.x+18, a.y+38);
-  drawLegend(a.x+18, a.y+58);
+
+  // Title/legend chip for readability over both day and night maps.
+  mapChip(a.x+10, a.y+10, 250, 62);
+  ctx.save();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "rgba(3,10,18,.55)";
+  ctx.fillStyle = mapTextFill();
+  ctx.font = "900 26px Segoe UI, Arial";
+  ctx.strokeText("Route Map", a.x+20, a.y+38);
+  ctx.fillText("Route Map", a.x+20, a.y+38);
+  ctx.restore();
+  drawLegend(a.x+20, a.y+58);
 }
 
 function drawTiles(a) {
@@ -531,28 +550,28 @@ function drawGraticule(a) {
 
 
 function routePalette() {
-  // Strong contrast for both bright day map tiles and dark/night map tiles.
+  // High-contrast route colors with clear sailed vs remaining difference.
   if (state.mapStyle === "light") {
     return {
-      full: "rgba(4, 22, 38, .56)",
-      remaining: "#0068ff",
-      remainingHalo: "rgba(255,255,255,.95)",
-      sailed: "#a85f00",
-      sailedHalo: "rgba(255,255,255,.95)",
-      center: "rgba(0, 18, 36, .92)",
-      activeOuter: "rgba(0, 18, 36, .92)",
-      activeInner: "#0068ff"
+      full: "rgba(8, 21, 38, .16)",
+      remaining: "#006CFF",
+      remainingHalo: "rgba(255,255,255,.98)",
+      sailed: "#F28C18",
+      sailedHalo: "rgba(255,255,255,.98)",
+      center: "rgba(8, 21, 38, .18)",
+      activeOuter: "rgba(8, 21, 38, .92)",
+      activeInner: "#006CFF"
     };
   }
   return {
-    full: "rgba(255,255,255,.30)",
-    remaining: "#70dfff",
-    remainingHalo: "rgba(3,10,18,.94)",
-    sailed: "#d9b45d",
-    sailedHalo: "rgba(3,10,18,.94)",
-    center: "rgba(234,244,255,.82)",
-    activeOuter: "rgba(255,255,255,.82)",
-    activeInner: "rgba(112,223,255,.70)"
+    full: "rgba(255,255,255,.16)",
+    remaining: "#63D7FF",
+    remainingHalo: "rgba(3,10,18,.96)",
+    sailed: "#F4B04B",
+    sailedHalo: "rgba(3,10,18,.96)",
+    center: "rgba(234,244,255,.26)",
+    activeOuter: "rgba(255,255,255,.86)",
+    activeInner: "#63D7FF"
   };
 }
 
@@ -561,46 +580,70 @@ function drawRouteLines(a, routeT) {
   const split = splitRoute();
   const palette = routePalette();
 
-  // Full route shadow/halo
-  strokeRoute(pts, a, palette.full, 11, []);
+  // Keep the underlying full route subtle so sailed vs remaining stand out clearly.
+  strokeRoute(pts, a, palette.full, 8, []);
 
-  // Remaining route: halo underneath + strong dashed line above.
-  strokeRoute(split.remaining, a, palette.remainingHalo, 8.5, [18,14]);
-  strokeRoute(split.remaining, a, palette.remaining, 5.5, [18,14]);
+  // Remaining route: strong blue dashed line.
+  strokeRoute(split.remaining, a, palette.remainingHalo, 9.5, [18,14]);
+  strokeRoute(split.remaining, a, palette.remaining, 6.2, [18,14]);
 
   const animatedSailed = trimRoute(split.sailed, routeT);
 
-  // Sailed route: halo underneath + strong solid line above.
+  // Sailed route: strong orange solid line.
   strokeRoute(animatedSailed, a, palette.sailedHalo, 9.5, []);
-  strokeRoute(animatedSailed, a, palette.sailed, 6.5, []);
+  strokeRoute(animatedSailed, a, palette.sailed, 6.2, []);
 
-  // Fine continuous centerline for route readability.
-  strokeRoute(pts, a, palette.center, 2.4, []);
+  // Very subtle route centerline only.
+  strokeRoute(pts, a, palette.center, 1.8, []);
   drawActiveSegment(a);
 
   // current ship marker always visible, with a connector to the projected point on route.
   const ship = mapProject(state.data.position.lon, state.data.position.lat, a);
   const projected = state.metrics?.projection?.projected || [state.data.position.lat, state.data.position.lon];
   const routePoint = mapProject(projected[1], projected[0], a);
+  const lightMode = state.mapStyle === "light";
 
   ctx.save();
-  ctx.strokeStyle = "rgba(112,223,255,.55)";
-  ctx.lineWidth = 3;
+  // Connector line: dark underlay + bright dashed overlay for both day and night.
+  ctx.strokeStyle = lightMode ? "rgba(0,30,60,.55)" : "rgba(3,10,18,.80)";
+  ctx.lineWidth = 5;
   ctx.setLineDash([8, 8]);
-  ctx.beginPath();
-  ctx.moveTo(ship.x, ship.y);
-  ctx.lineTo(routePoint.x, routePoint.y);
-  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ship.x, ship.y); ctx.lineTo(routePoint.x, routePoint.y); ctx.stroke();
+  ctx.strokeStyle = lightMode ? "rgba(0,104,255,.92)" : "rgba(112,223,255,.75)";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(ship.x, ship.y); ctx.lineTo(routePoint.x, routePoint.y); ctx.stroke();
   ctx.setLineDash([]);
   ctx.restore();
 
-  ctx.fillStyle = "rgba(217,180,93,.75)";
-  ctx.beginPath(); ctx.arc(routePoint.x,routePoint.y,6,0,Math.PI*2); ctx.fill();
+  // Projected point on route.
+  ctx.save();
+  ctx.fillStyle = lightMode ? "#c77400" : "rgba(217,180,93,.90)";
+  ctx.strokeStyle = lightMode ? "rgba(255,255,255,.95)" : "rgba(3,10,18,.90)";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.arc(routePoint.x,routePoint.y,6.5,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.restore();
 
   const pulse = 1 + Math.sin(Date.now()/340)*.12;
-  ctx.fillStyle = "rgba(112,223,255,.22)"; ctx.beginPath(); ctx.arc(ship.x,ship.y,28*pulse,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(ship.x,ship.y,8,0,Math.PI*2); ctx.fill();
-  ctx.strokeStyle = "#70dfff"; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(ship.x,ship.y,16,0,Math.PI*2); ctx.stroke();
+
+  // Stronger current-position marker for daylight.
+  ctx.save();
+  ctx.fillStyle = lightMode ? "rgba(0,104,255,.18)" : "rgba(112,223,255,.22)";
+  ctx.beginPath(); ctx.arc(ship.x,ship.y,28*pulse,0,Math.PI*2); ctx.fill();
+
+  // Outer dark ring for contrast.
+  ctx.strokeStyle = lightMode ? "rgba(5,22,41,.95)" : "rgba(3,10,18,.95)";
+  ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(ship.x,ship.y,16,0,Math.PI*2); ctx.stroke();
+
+  // Bright ring.
+  ctx.strokeStyle = lightMode ? "#ffffff" : "#70dfff";
+  ctx.lineWidth = 4.2; ctx.beginPath(); ctx.arc(ship.x,ship.y,16,0,Math.PI*2); ctx.stroke();
+
+  // Inner fill.
+  ctx.fillStyle = lightMode ? "#0068ff" : "#ffffff"; ctx.beginPath(); ctx.arc(ship.x,ship.y,8.5,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle = lightMode ? "#ffffff" : "rgba(3,10,18,.90)";
+  ctx.lineWidth = 2.5; ctx.stroke();
+  ctx.restore();
+
   label(ship.x+22, ship.y-12, "CURRENT POSITION", `${fmtLat(state.data.position.lat)} · ${fmtLon(state.data.position.lon)}`);
 
   const start = mapProject(pts[0][1],pts[0][0],a), end = mapProject(pts.at(-1)[1],pts.at(-1)[0],a);
@@ -682,12 +725,36 @@ function card(x,y,w,h,title,value) {
 }
 
 function drawLegend(x,y) {
-  const items = [["rgba(255,255,255,.45)","Full route"],["#d9b45d","Sailed"],["#70dfff","Remaining"],["#fff","Current"]];
-  let dx=x;
-  ctx.font="800 15px Segoe UI, Arial";
+  const palette = routePalette();
+  const items = [
+    [palette.sailed, "Sailed"],
+    [palette.remaining, "Remaining"]
+  ];
+  let dx = x;
+
   for (const [c,t] of items) {
-    ctx.fillStyle=c; ctx.beginPath(); ctx.arc(dx,y,6,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle="#9fb7d0"; ctx.fillText(t,dx+12,y+5); dx += ctx.measureText(t).width + 62;
+    ctx.save();
+    ctx.font = "800 15px Segoe UI, Arial";
+    const w = ctx.measureText(t).width + 34;
+    mapChip(dx-12, y-17, w+10, 26);
+
+    // Strong visible color dot
+    ctx.fillStyle = c;
+    ctx.strokeStyle = state.mapStyle === "light" ? "rgba(255,255,255,.98)" : "rgba(3,10,18,.98)";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(dx, y, 6.2, 0, Math.PI*2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.lineWidth = 3.2;
+    ctx.strokeStyle = "rgba(3,10,18,.55)";
+    ctx.fillStyle = mapTextSubFill();
+    ctx.strokeText(t, dx+14, y+5);
+    ctx.fillText(t, dx+14, y+5);
+    ctx.restore();
+
+    dx += w + 24;
   }
 }
 
@@ -920,7 +987,7 @@ function glow(x,y,r,c) { const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addCol
 function label(x,y,t,s) {
   ctx.save();
   ctx.lineWidth = 4;
-  ctx.strokeStyle = state.mapStyle === "light" ? "rgba(255,255,255,.95)" : "rgba(3,10,18,.95)";
+  ctx.strokeStyle = state.mapStyle === "light" ? "rgba(255,255,255,.98)" : "rgba(3,10,18,.95)";
   ctx.fillStyle = state.mapStyle === "light" ? "#051629" : "#eaf4ff";
   ctx.font="900 17px Segoe UI,Arial";
   ctx.strokeText(t,x,y);
@@ -942,7 +1009,7 @@ function pointLabel(p,t) {
 
   ctx.save();
   ctx.lineWidth = 4;
-  ctx.strokeStyle = state.mapStyle === "light" ? "rgba(255,255,255,.95)" : "rgba(3,10,18,.95)";
+  ctx.strokeStyle = state.mapStyle === "light" ? "rgba(255,255,255,.98)" : "rgba(3,10,18,.95)";
   ctx.fillStyle = state.mapStyle === "light" ? "#051629" : "#eaf4ff";
   ctx.font="900 15px Segoe UI,Arial";
   ctx.strokeText(t,p.x+10,p.y-8);
@@ -965,13 +1032,13 @@ function normLon(lon) { while(lon>180)lon-=360; while(lon<-180)lon+=360; return 
 function shortLon(a,b) { let d=b-a; while(d>180)d-=360; while(d<-180)d+=360; return d; }
 function safe(s) { return String(s||"voyage").replace(/[^a-z0-9_-]+/gi,"_").replace(/^_+|_+$/g,""); }
 function downloadFile(content,name,type) { const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a"); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url); }
-function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v15-data", JSON.stringify(state.data)); }
+function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v17-data", JSON.stringify(state.data)); }
 function loadFromLocalStorage() {
   try {
-    const s=localStorage.getItem("voyage-view-fast-v15-data");
+    const s=localStorage.getItem("voyage-view-fast-v17-data");
     if(!s) return;
     const saved=JSON.parse(s);
-    if(saved.appVersion !== "v15") return;
+    if(saved.appVersion !== "v17") return;
     state.data=saved;
   } catch(e){}
 }
