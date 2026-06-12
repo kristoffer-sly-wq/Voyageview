@@ -1,2 +1,0 @@
-# Voyageview
-voyage view
