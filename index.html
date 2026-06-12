@@ -96,9 +96,9 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
 <div class="shell">
   <header class="topbar">
     <div>
-      <div class="eyebrow">ONBOARD TV DISPLAY · FAST ROUTE VIDEO</div>
+      <div class="eyebrow">ONBOARD TV DISPLAY · FAST VOYAGE VIDEO</div>
       <h1 id="mainTitle">NORMAND MAXIMUS — VOYAGE UPDATE</h1>
-      <div class="subline"><span id="routeLine">Route loading…</span><span id="statsLine"></span></div>
+      <div class="subline"><span id="routeLine">Route loading…</span></div>
     </div>
     <div class="actions">
       <label class="filebtn">Upload RTZ<input id="rtzInput" type="file" accept=".rtz,.xml"></label>
@@ -115,7 +115,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
     <section class="canvas-card">
       <div class="canvas-wrap">
         <canvas id="dashCanvas" width="1920" height="1080"></canvas>
-        <div class="canvas-note">All ETA / position / distance information is visible from second 0. Only the route animates.</div>
+        <div class="canvas-note">All ETA / position / distance information is visible from second 0. The camera moves smoothly while the route remains readable.</div>
       </div>
     </section>
 
@@ -167,7 +167,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
           <button id="applyBtn" class="primary">Apply update</button>
           <button id="saveBtn">Download voyage-data.json</button>
         </div>
-        <p class="help">Use <b>Fit Route</b> before exporting. The 1-minute video keeps all data visible from second 0, draws the route in the first 10 seconds, then smoothly zooms world → route → current position → final route view.</p>
+        <p class="help">Use <b>Fit Route</b> before exporting. The 1-minute video keeps all data visible from second 0, draws the route in the first 8 seconds, then smoothly zooms route overview → closer route/current position → final route view.</p>
         <div id="recordProgress" class="progress">
           <div class="progress-top"><span id="recordText">Recording…</span><span id="recordTime">60s</span></div>
           <div class="bar"><span id="recordBar"></span></div>
@@ -178,7 +178,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
 </div>
 
 <script>
-const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG."};
+const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v4"};
 
 const state = {
   data: structuredClone(DEFAULT_DATA),
@@ -193,7 +193,7 @@ const state = {
 };
 
 const el = {};
-const ids = ["dashCanvas","mainTitle","routeLine","statsLine","rtzInput","fitBtn","worldBtn","darkBtn","lightBtn","pngBtn","videoBtn","vessel","title","from","to","dateLT","timeLT","lat","lon","cog","sog","hdg","avgSog","summaryText","etaEnabled","manualEta","metricsEnabled","manualSailed","manualToGo","manualTotal","manualProgress","applyBtn","saveBtn","recordProgress","recordText","recordTime","recordBar"];
+const ids = ["dashCanvas","mainTitle","routeLine","rtzInput","fitBtn","worldBtn","darkBtn","lightBtn","pngBtn","videoBtn","vessel","title","from","to","dateLT","timeLT","lat","lon","cog","sog","hdg","avgSog","summaryText","etaEnabled","manualEta","metricsEnabled","manualSailed","manualToGo","manualTotal","manualProgress","applyBtn","saveBtn","recordProgress","recordText","recordTime","recordBar"];
 for (const id of ids) el[id] = document.getElementById(id);
 
 const ctx = el.dashCanvas.getContext("2d");
@@ -316,7 +316,6 @@ function fillForm() {
   const d = state.data;
   el.mainTitle.textContent = `${d.vessel} — ${d.title}`.toUpperCase();
   el.routeLine.textContent = `${d.from} → ${d.to}`;
-  el.statsLine.textContent = `${d.route.waypoints.length} WPT · ${fmt(state.metrics.total)} NM`;
   el.vessel.value = d.vessel; el.title.value = d.title; el.from.value = d.from; el.to.value = d.to;
   el.dateLT.value = d.dateLT; el.timeLT.value = d.timeLT;
   el.lat.value = fmtLat(d.position.lat); el.lon.value = fmtLon(d.position.lon);
@@ -333,22 +332,43 @@ function fillForm() {
 
 function recalc() {
   const d = state.data;
-  const pts = routePts();
-  const projection = projectOnRoute([d.position.lat, d.position.lon], pts);
-  const total = totalDistance(pts);
-  let sailed = projection.distanceFromStart;
-  let toGo = Math.max(0, total - sailed);
-  let progress = total ? sailed / total * 100 : 0;
-  if (d.manual.metricsEnabled) {
-    sailed = Number.isFinite(Number(d.manual.sailed)) ? Number(d.manual.sailed) : sailed;
-    toGo = Number.isFinite(Number(d.manual.toGo)) ? Number(d.manual.toGo) : toGo;
-    const manualTotal = Number.isFinite(Number(d.manual.total)) ? Number(d.manual.total) : sailed + toGo;
-    totalOverride = manualTotal;
-    progress = Number.isFinite(Number(d.manual.progress)) ? Number(d.manual.progress) : (manualTotal ? sailed/manualTotal*100 : progress);
-    state.metrics = {projection, total: manualTotal, sailed, toGo, progress: clamp(progress,0,100), eta:"—", days:0};
-  } else {
-    state.metrics = {projection, total, sailed, toGo, progress: clamp(progress,0,100), eta:"—", days:0};
+  const pts = routePts().filter(p => Number.isFinite(p[0]) && Number.isFinite(p[1]));
+  if (pts.length < 2) {
+    state.metrics = {projection:{segmentIndex:0, projected:[d.position.lat,d.position.lon], distanceFromStart:0}, total:0, sailed:0, toGo:0, progress:0, eta:"—", days:0};
+    return;
   }
+
+  const projection = projectOnRoute([d.position.lat, d.position.lon], pts);
+  const autoTotal = totalDistance(pts);
+  let sailed = clamp(projection.distanceFromStart, 0, autoTotal);
+  let toGo = Math.max(0, autoTotal - sailed);
+  let total = autoTotal;
+  let progress = total ? sailed / total * 100 : 0;
+
+  // Manual override only affects fields that actually contain numbers.
+  if (d.manual.metricsEnabled) {
+    const manualSailed = nullable(d.manual.sailed);
+    const manualToGo = nullable(d.manual.toGo);
+    const manualTotal = nullable(d.manual.total);
+    const manualProgress = nullable(d.manual.progress);
+    if (manualSailed !== null) sailed = manualSailed;
+    if (manualToGo !== null) toGo = manualToGo;
+    if (manualTotal !== null) total = manualTotal;
+    else if (manualSailed !== null && manualToGo !== null) total = sailed + toGo;
+    if (manualProgress !== null) progress = manualProgress;
+    else progress = total ? sailed / total * 100 : 0;
+  }
+
+  state.metrics = {
+    projection,
+    total: Math.max(0, total),
+    sailed: Math.max(0, sailed),
+    toGo: Math.max(0, toGo),
+    progress: clamp(progress,0,100),
+    eta:"—",
+    days:0
+  };
+
   if (d.manual.etaEnabled && d.manual.eta) {
     state.metrics.eta = d.manual.eta;
     state.metrics.days = daysBetween(d.dateLT, d.timeLT, d.manual.eta);
@@ -364,18 +384,7 @@ function routePts() {
 }
 
 function fitRoute() {
-  const pts = routePts();
-  const area = mapArea();
-  const pxy = pts.map(([lat,lon]) => mercator(lon,lat,4));
-  const ship = mercator(state.data.position.lon, state.data.position.lat,4);
-  pxy.push(ship);
-  let minX = Math.min(...pxy.map(p=>p.x)), maxX=Math.max(...pxy.map(p=>p.x));
-  let minY = Math.min(...pxy.map(p=>p.y)), maxY=Math.max(...pxy.map(p=>p.y));
-  let spanX = Math.max(1, maxX-minX), spanY=Math.max(1, maxY-minY);
-  let z = 4 + Math.log2(Math.min((area.w-120)/spanX, (area.h-120)/spanY));
-  z = clamp(z, 1, 7);
-  const center = {x:(minX+maxX)/2 * Math.pow(2,z-4), y:(minY+maxY)/2 * Math.pow(2,z-4)};
-  state.view = {zoom:z, cx:center.x, cy:center.y};
+  state.view = fitRouteViewObject();
 }
 
 function worldView() {
@@ -404,10 +413,9 @@ function drawBackground() {
 
 function drawHeader() {
   const d = state.data;
-  ctx.fillStyle = "#d9b45d"; ctx.font = "900 22px Segoe UI, Arial"; ctx.fillText("ONBOARD TV DISPLAY · FAST ROUTE VIDEO", 54, 48);
+  ctx.fillStyle = "#d9b45d"; ctx.font = "900 22px Segoe UI, Arial"; ctx.fillText("ONBOARD TV DISPLAY · FAST VOYAGE VIDEO", 54, 48);
   ctx.fillStyle = "#eaf4ff"; ctx.font = "900 50px Segoe UI, Arial"; ctx.fillText(`${d.vessel} — ${d.title}`.toUpperCase(), 54, 104);
   ctx.fillStyle = "#9fb7d0"; ctx.font = "600 24px Segoe UI, Arial"; ctx.fillText(`${d.from} → ${d.to}`, 54, 142);
-  ctx.fillStyle = "#d9b45d"; ctx.font = "800 22px Segoe UI, Arial"; ctx.fillText(`${d.route.waypoints.length} WPT · ${fmt(state.metrics.total)} NM`, 1560, 104);
 }
 
 function drawMap(routeT) {
@@ -489,10 +497,12 @@ function drawGraticule(a) {
 function drawRouteLines(a, routeT) {
   const pts = routePts();
   const split = splitRoute();
-  strokeRoute(pts, a, "rgba(255,255,255,.24)", 10, []);
-  strokeRoute(split.remaining, a, "#70dfff", 5, [16,16]);
+  strokeRoute(pts, a, "rgba(255,255,255,.30)", 12, []);
+  strokeRoute(split.remaining, a, "#70dfff", 7, [18,14]);
   const animatedSailed = trimRoute(split.sailed, routeT);
-  strokeRoute(animatedSailed, a, "#d9b45d", 8, []);
+  strokeRoute(animatedSailed, a, "#d9b45d", 10, []);
+  // Fine centerline makes the route visible even during close zoom.
+  strokeRoute(pts, a, "rgba(234,244,255,.70)", 2.2, []);
 
   // current ship marker always visible
   const ship = mapProject(state.data.position.lon, state.data.position.lat, a);
@@ -642,13 +652,23 @@ function daysBetween(date,time,eta) { const a=new Date(`${date}T${time||"00:00"}
 function cloneView(v) { return {zoom:v.zoom, cx:v.cx, cy:v.cy}; }
 
 function currentPositionView() {
-  const a = mapArea();
-  const z = 5.2;
+  // Do not zoom too close; keep the route segment visible around the vessel.
+  const fit = fitRouteViewObject();
+  const z = clamp(fit.zoom + 0.85, fit.zoom, 5.6);
   const p = mercator(state.data.position.lon, state.data.position.lat, z);
-  return {zoom:z, cx:p.x, cy:p.y};
+  return {zoom:z, cx:p.x - 90, cy:p.y + 10};
 }
 
-function fitRouteViewObject() {
+function routeStartView() {
+  const fit = fitRouteViewObject();
+  const pts = routePts();
+  const start = pts[0];
+  const z = clamp(fit.zoom + 0.45, fit.zoom, 5.2);
+  const p = mercator(start[1], start[0], z);
+  return {zoom:z, cx:p.x - 160, cy:p.y + 40};
+}
+
+function fitRouteViewObject(padding = 110) {
   const pts = routePts();
   const area = mapArea();
   const pxy = pts.map(([lat,lon]) => mercator(lon,lat,4));
@@ -657,14 +677,17 @@ function fitRouteViewObject() {
   let minX = Math.min(...pxy.map(p=>p.x)), maxX=Math.max(...pxy.map(p=>p.x));
   let minY = Math.min(...pxy.map(p=>p.y)), maxY=Math.max(...pxy.map(p=>p.y));
   let spanX = Math.max(1, maxX-minX), spanY=Math.max(1, maxY-minY);
-  let z = 4 + Math.log2(Math.min((area.w-120)/spanX, (area.h-120)/spanY));
-  z = clamp(z, 1, 7);
+  let z = 4 + Math.log2(Math.min((area.w-padding)/spanX, (area.h-padding)/spanY));
+  z = clamp(z, 1.55, 6.3);
   const center = {x:(minX+maxX)/2 * Math.pow(2,z-4), y:(minY+maxY)/2 * Math.pow(2,z-4)};
   return {zoom:z, cx:center.x, cy:center.y};
 }
 
-function worldViewObject() {
-  return {zoom:1.35, cx:128*Math.pow(2,1.35), cy:128*Math.pow(2,1.35)};
+function wideRouteViewObject() {
+  const fit = fitRouteViewObject(70);
+  const z = clamp(fit.zoom - 0.35, 1.55, 6.0);
+  const factor = Math.pow(2, z - fit.zoom);
+  return {zoom:z, cx:fit.cx * factor, cy:fit.cy * factor};
 }
 
 function lerpView(a,b,t) {
@@ -680,18 +703,20 @@ function lerpView(a,b,t) {
 }
 
 function setAnimatedView(elapsed) {
-  const world = worldViewObject();
-  const fit = fitRouteViewObject();
+  // Start close enough to see the voyage, not the whole planet.
+  const wide = wideRouteViewObject();
+  const start = routeStartView();
   const current = currentPositionView();
+  const fit = fitRouteViewObject();
 
-  if (elapsed < 5) {
-    state.view = world;
-  } else if (elapsed < 16) {
-    state.view = lerpView(world, fit, (elapsed-5)/11);
-  } else if (elapsed < 27) {
-    state.view = lerpView(fit, current, (elapsed-16)/11);
-  } else if (elapsed < 38) {
-    state.view = lerpView(current, fit, (elapsed-27)/11);
+  if (elapsed < 3) {
+    state.view = wide;
+  } else if (elapsed < 11) {
+    state.view = lerpView(wide, start, (elapsed-3)/8);
+  } else if (elapsed < 24) {
+    state.view = lerpView(start, current, (elapsed-11)/13);
+  } else if (elapsed < 34) {
+    state.view = lerpView(current, fit, (elapsed-24)/10);
   } else {
     state.view = fit;
   }
@@ -715,7 +740,7 @@ async function recordVideo() {
       const elapsed=(now-start)/1000, t=Math.min(1,elapsed/duration);
       // Data panels are visible from second 0. Camera moves smoothly while route draws quickly.
       setAnimatedView(elapsed);
-      state.routeDraw = Math.min(1, elapsed/10);
+      state.routeDraw = Math.min(1, elapsed/8);
       render(state.routeDraw);
       el.recordTime.textContent=`${Math.max(0,Math.ceil(duration-elapsed))}s`;
       el.recordBar.style.width=`${Math.round(t*100)}%`;
@@ -761,8 +786,16 @@ function normLon(lon) { while(lon>180)lon-=360; while(lon<-180)lon+=360; return 
 function shortLon(a,b) { let d=b-a; while(d>180)d-=360; while(d<-180)d+=360; return d; }
 function safe(s) { return String(s||"voyage").replace(/[^a-z0-9_-]+/gi,"_").replace(/^_+|_+$/g,""); }
 function downloadFile(content,name,type) { const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a"); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url); }
-function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-data", JSON.stringify(state.data)); }
-function loadFromLocalStorage() { try { const s=localStorage.getItem("voyage-view-fast-data"); if(s) state.data=JSON.parse(s); } catch(e){} }
+function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v4-data", JSON.stringify(state.data)); }
+function loadFromLocalStorage() {
+  try {
+    const s=localStorage.getItem("voyage-view-fast-v4-data");
+    if(!s) return;
+    const saved=JSON.parse(s);
+    if(saved.appVersion !== "v4") return;
+    state.data=saved;
+  } catch(e){}
+}
 </script>
 </body>
 </html>
