@@ -115,7 +115,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
     <section class="canvas-card">
       <div class="canvas-wrap">
         <canvas id="dashCanvas" width="1920" height="1080"></canvas>
-        <div class="canvas-note">All ETA / position / distance information is visible from second 0. V7 style restored: clean route with START / FINISH only.</div>
+        <div class="canvas-note">All ETA / position / distance information is visible from second 0. Clean V7-style route with START / FINISH only. No artificial route extension.</div>
       </div>
     </section>
 
@@ -191,7 +191,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
 </div>
 
 <script>
-const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v10","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
+const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v11","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
 
 const state = {
   data: structuredClone(DEFAULT_DATA),
@@ -518,13 +518,13 @@ function drawGraticule(a) {
 function drawRouteLines(a, routeT) {
   const pts = routePts();
   const split = splitRoute();
-  strokeRoute(pts, a, "rgba(255,255,255,.30)", 12, []);
-  strokeRoute(split.remaining, a, "#70dfff", 8, [18,14]);
+  strokeRoute(pts, a, "rgba(255,255,255,.24)", 9, []);
+  strokeRoute(split.remaining, a, "#70dfff", 6, [18,14]);
   const animatedSailed = trimRoute(split.sailed, routeT);
-  strokeRoute(animatedSailed, a, "#d9b45d", 10, []);
-  // Continuous fine centerline so the complete RTZ route stays visible.
-  strokeRoute(pts, a, "rgba(234,244,255,.82)", 2.8, []);
-  drawLocalRouteSegment(a);
+  strokeRoute(animatedSailed, a, "#d9b45d", 8, []);
+  // Fine continuous centerline only — clean, no fake tangent.
+  strokeRoute(pts, a, "rgba(234,244,255,.70)", 2.2, []);
+  drawActiveSegment(a);
 
   // current ship marker always visible, with a connector to the projected point on route.
   const ship = mapProject(state.data.position.lon, state.data.position.lat, a);
@@ -568,11 +568,7 @@ function strokeRoute(pts,a,color,width,dash) {
 
   for (let i=0;i<pts.length;i++) {
     const p = mapProject(pts[i][1],pts[i][0],a);
-
-    // V7 fix:
-    // Do NOT break the route just because the screen distance is large.
-    // Long ocean legs such as Guyana -> Las Palmas were incorrectly treated
-    // as world-wrap/dateline jumps, causing route sections to disappear.
+    // Continuous RTZ route drawing. Do not break long ocean legs.
     if (i===0) ctx.moveTo(p.x,p.y);
     else ctx.lineTo(p.x,p.y);
   }
@@ -582,44 +578,18 @@ function strokeRoute(pts,a,color,width,dash) {
 }
 
 
-function drawLocalRouteSegment(a) {
-  // Highlight active RTZ segment during close zoom, without showing waypoint names.
+function drawActiveSegment(a) {
+  // Clean active-segment highlight only. No artificial tangent / extension line.
   const pts = routePts();
   const m = state.metrics?.projection;
   if (!m || !pts[m.segmentIndex] || !pts[m.segmentIndex+1]) return;
 
   const seg = [pts[m.segmentIndex], pts[m.segmentIndex+1]];
-  strokeRoute(seg, a, "rgba(255,255,255,.92)", 5.5, []);
-  strokeRoute(seg, a, "rgba(112,223,255,.82)", 3, []);
 
-  // Short local tangent through the projected route point, so a route cue remains
-  // visible in coastal close zoom even if segment endpoints are outside the frame.
-  const p1 = mapProject(seg[0][1], seg[0][0], a);
-  const p2 = mapProject(seg[1][1], seg[1][0], a);
-  const rp = mapProject(m.projected[1], m.projected[0], a);
-  let dx = p2.x - p1.x;
-  let dy = p2.y - p1.y;
-  const len = Math.sqrt(dx*dx + dy*dy) || 1;
-  dx /= len; dy /= len;
-  const localLen = Math.max(120, Math.min(320, Math.max(a.w, a.h) * 0.24));
-
-  ctx.save();
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.strokeStyle = "rgba(217,180,93,.88)";
-  ctx.lineWidth = 5.5;
-  ctx.beginPath();
-  ctx.moveTo(rp.x - dx*localLen, rp.y - dy*localLen);
-  ctx.lineTo(rp.x + dx*localLen, rp.y + dy*localLen);
-  ctx.stroke();
-
-  ctx.strokeStyle = "rgba(255,255,255,.82)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(rp.x - dx*localLen, rp.y - dy*localLen);
-  ctx.lineTo(rp.x + dx*localLen, rp.y + dy*localLen);
-  ctx.stroke();
-  ctx.restore();
+  // This draws the actual RTZ segment through the viewport, even when the segment
+  // endpoints are outside the map frame. No fake line is added.
+  strokeRoute(seg, a, "rgba(255,255,255,.82)", 4.2, []);
+  strokeRoute(seg, a, "rgba(112,223,255,.70)", 2.4, []);
 }
 
 function drawPanels() {
@@ -914,13 +884,13 @@ function normLon(lon) { while(lon>180)lon-=360; while(lon<-180)lon+=360; return 
 function shortLon(a,b) { let d=b-a; while(d>180)d-=360; while(d<-180)d+=360; return d; }
 function safe(s) { return String(s||"voyage").replace(/[^a-z0-9_-]+/gi,"_").replace(/^_+|_+$/g,""); }
 function downloadFile(content,name,type) { const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a"); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url); }
-function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v10-data", JSON.stringify(state.data)); }
+function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v11-data", JSON.stringify(state.data)); }
 function loadFromLocalStorage() {
   try {
-    const s=localStorage.getItem("voyage-view-fast-v10-data");
+    const s=localStorage.getItem("voyage-view-fast-v11-data");
     if(!s) return;
     const saved=JSON.parse(s);
-    if(saved.appVersion !== "v10") return;
+    if(saved.appVersion !== "v11") return;
     state.data=saved;
   } catch(e){}
 }

@@ -1,16 +1,16 @@
-# Voyage View Fast Canvas V10 — V7 Restored
+# Voyage View Fast Canvas V11 — No Fake Tangent
 
-This version restores the V7 visual style but keeps the important fixes:
-
-- START / FINISH labels are back.
-- No waypoint names.
-- No waypoint number labels.
-- Clean route presentation.
-- Continuous RTZ route drawing, so long ocean legs do not disappear.
-- Close zoom remains available for coastal voyages.
-- Close zoom centers on the active RTZ segment so the route stays visible.
+Fixes from V10:
+- Removes the artificial local tangent line completely.
+- Keeps V7 visual style.
+- Keeps START / FINISH.
+- No waypoint names or waypoint number labels.
+- Route is only the real RTZ geometry.
+- Sailed and remaining route remain clean.
+- Active segment is highlighted only by drawing the actual RTZ segment; no extension line.
+- Continuous route drawing fix remains.
+- Close zoom settings remain.
 - Editable summary remains.
-- Video animation settings remain.
 
 Upload only:
 - index.html
@@ -19,4 +19,4 @@ Upload only:
 After upload:
 1. Wait for GitHub Pages deployment.
 2. Press Ctrl + F5.
-3. Use an incognito/private window once if old cached values remain.
+3. Use an incognito/private window if old cached values remain.
