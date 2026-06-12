@@ -33,7 +33,6 @@ button, input { font: inherit; }
   background: linear-gradient(180deg, rgba(10,25,44,.96), rgba(5,14,27,.99));
   box-shadow: 0 22px 46px rgba(0,0,0,.34);
 }
-.eyebrow { color: var(--gold); font-size: 12px; letter-spacing: .16em; font-weight: 900; margin-bottom: 6px; }
 h1 { margin: 0; font-size: clamp(26px, 3vw, 40px); line-height: 1.02; letter-spacing: -.035em; }
 .subline { margin-top: 8px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
 .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
@@ -96,9 +95,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
 <div class="shell">
   <header class="topbar">
     <div>
-      <div class="eyebrow">ONBOARD TV DISPLAY · FAST VOYAGE VIDEO</div>
       <h1 id="mainTitle">NORMAND MAXIMUS — VOYAGE UPDATE</h1>
-      <div class="subline"><span id="routeLine">Route loading…</span></div>
     </div>
     <div class="actions">
       <label class="filebtn">Upload RTZ<input id="rtzInput" type="file" accept=".rtz,.xml"></label>
@@ -115,7 +112,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
     <section class="canvas-card">
       <div class="canvas-wrap">
         <canvas id="dashCanvas" width="1920" height="1080"></canvas>
-        <div class="canvas-note">All ETA / position / distance information is visible from second 0. Clean V7-style route with START / FINISH only. No artificial route extension.</div>
+        
       </div>
     </section>
 
@@ -191,7 +188,7 @@ input:focus, textarea:focus { border-color: rgba(112,223,255,.6); }
 </div>
 
 <script>
-const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v11","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
+const DEFAULT_DATA = {"vessel":"NORMAND MAXIMUS","title":"VOYAGE UPDATE","from":"Uaru Field, Guyana","to":"Las Palmas, Gran Canaria","dateLT":"2026-06-11","timeLT":"00:00","position":{"lat":10.013333333333334,"lon":-53.00333333333333},"navigation":{"cog":68,"sog":12.0,"hdg":70,"avgSog":12.0},"manual":{"etaEnabled":false,"eta":"","metricsEnabled":false,"sailed":null,"toGo":null,"total":null,"progress":null},"route":{"name":"Uaru Field Guyana - Las Palmas","waypoints":[{"seq":1,"id":"2","name":"","lat":7.956464,"lon":-56.916364},{"seq":2,"id":"11","name":"","lat":7.968903,"lon":-56.896033},{"seq":3,"id":"12","name":"","lat":8.123021,"lon":-56.840899},{"seq":4,"id":"13","name":"Buoy","lat":11.936551,"lon":-49.065186},{"seq":5,"id":"1","name":"Las Palmas Coast","lat":27.699771,"lon":-15.30229},{"seq":6,"id":"5","name":"","lat":27.790994,"lon":-15.263451},{"seq":7,"id":"3","name":"","lat":27.99901,"lon":-15.272485},{"seq":8,"id":"4","name":"","lat":28.095538,"lon":-15.353137},{"seq":9,"id":"6","name":"Pilot","lat":28.113942,"lon":-15.383892},{"seq":10,"id":"7","name":"","lat":28.11415,"lon":-15.405577},{"seq":11,"id":"8","name":"","lat":28.116801,"lon":-15.409253},{"seq":12,"id":"9","name":"","lat":28.123519,"lon":-15.409863},{"seq":13,"id":"10","name":"","lat":28.130027,"lon":-15.410924}]},"summary":"Proceeding from Uaru Field, Guyana to Las Palmas, Gran Canaria. Route and ETA are updated from RTZ, current position and average SOG.","appVersion":"v12","animation":{"closeZoomEnabled":true,"closeZoomLevel":6.2,"closeHoldSeconds":16}};
 
 const state = {
   data: structuredClone(DEFAULT_DATA),
@@ -206,7 +203,7 @@ const state = {
 };
 
 const el = {};
-const ids = ["dashCanvas","mainTitle","routeLine","rtzInput","fitBtn","worldBtn","darkBtn","lightBtn","pngBtn","videoBtn","vessel","title","from","to","dateLT","timeLT","lat","lon","cog","sog","hdg","avgSog","summaryText","closeZoomEnabled","closeZoomLevel","closeHoldSeconds","etaEnabled","manualEta","metricsEnabled","manualSailed","manualToGo","manualTotal","manualProgress","applyBtn","saveBtn","recordProgress","recordText","recordTime","recordBar"];
+const ids = ["dashCanvas","mainTitle","rtzInput","fitBtn","worldBtn","darkBtn","lightBtn","pngBtn","videoBtn","vessel","title","from","to","dateLT","timeLT","lat","lon","cog","sog","hdg","avgSog","summaryText","closeZoomEnabled","closeZoomLevel","closeHoldSeconds","etaEnabled","manualEta","metricsEnabled","manualSailed","manualToGo","manualTotal","manualProgress","applyBtn","saveBtn","recordProgress","recordText","recordTime","recordBar"];
 for (const id of ids) el[id] = document.getElementById(id);
 
 const ctx = el.dashCanvas.getContext("2d");
@@ -331,8 +328,7 @@ function applyForm() {
 
 function fillForm() {
   const d = state.data;
-  el.mainTitle.textContent = `${d.vessel} — ${d.title}`.toUpperCase();
-  el.routeLine.textContent = `${d.from} → ${d.to}`;
+  el.mainTitle.textContent = "NORMAND MAXIMUS — VOYAGE UPDATE";
   el.vessel.value = d.vessel; el.title.value = d.title; el.from.value = d.from; el.to.value = d.to;
   el.dateLT.value = d.dateLT; el.timeLT.value = d.timeLT;
   el.lat.value = fmtLat(d.position.lat); el.lon.value = fmtLon(d.position.lon);
@@ -601,13 +597,13 @@ function drawPanels() {
 
   let y=a.y+70;
   card(a.x+18,y,250,96,"POSITION",`${fmtLat(d.position.lat)}\n${fmtLon(d.position.lon)}`); 
-  card(a.x+288,y,250,96,"COG / SOG / HDG",`${Math.round(d.navigation.cog)}° · ${Number(d.navigation.sog).toFixed(1)} kn\nHDG ${Math.round(d.navigation.hdg)}°`);
+  card(a.x+288,y,250,96,"COURSE & SPEED",`${Math.round(d.navigation.cog)}° · ${Number(d.navigation.sog).toFixed(1)} kn`);
   y+=116;
   card(a.x+18,y,250,96,"DISTANCE SAILED",`${fmt(m.sailed)} NM`);
   card(a.x+288,y,250,96,"DISTANCE TO GO",`${fmt(m.toGo)} NM`);
   y+=116;
   card(a.x+18,y,250,96,"TOTAL DISTANCE",`${fmt(m.total)} NM`);
-  card(a.x+288,y,250,96,"AVG SOG ETA",`${Number(d.navigation.avgSog).toFixed(1)} kn`);
+  card(a.x+288,y,250,96,"AVG SPEED SINCE MIDNIGHT",`${Number(d.navigation.avgSog).toFixed(1)} kn`);
   y+=126;
   roundRect(a.x+18,y,520,190,18,"rgba(31,31,21,.94)","rgba(217,180,93,.38)");
   ctx.fillStyle="#d9b45d"; ctx.font="900 17px Segoe UI, Arial"; ctx.fillText("ESTIMATED ARRIVAL", a.x+42,y+36);
@@ -884,13 +880,13 @@ function normLon(lon) { while(lon>180)lon-=360; while(lon<-180)lon+=360; return 
 function shortLon(a,b) { let d=b-a; while(d>180)d-=360; while(d<-180)d+=360; return d; }
 function safe(s) { return String(s||"voyage").replace(/[^a-z0-9_-]+/gi,"_").replace(/^_+|_+$/g,""); }
 function downloadFile(content,name,type) { const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a"); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url); }
-function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v11-data", JSON.stringify(state.data)); }
+function saveToLocalStorage() { localStorage.setItem("voyage-view-fast-v12-data", JSON.stringify(state.data)); }
 function loadFromLocalStorage() {
   try {
-    const s=localStorage.getItem("voyage-view-fast-v11-data");
+    const s=localStorage.getItem("voyage-view-fast-v12-data");
     if(!s) return;
     const saved=JSON.parse(s);
-    if(saved.appVersion !== "v11") return;
+    if(saved.appVersion !== "v12") return;
     state.data=saved;
   } catch(e){}
 }

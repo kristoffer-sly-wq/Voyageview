@@ -1,22 +1,17 @@
-# Voyage View Fast Canvas V11 — No Fake Tangent
+# Voyage View Fast Canvas V12 — Text Cleanup
 
-Fixes from V10:
-- Removes the artificial local tangent line completely.
-- Keeps V7 visual style.
-- Keeps START / FINISH.
-- No waypoint names or waypoint number labels.
-- Route is only the real RTZ geometry.
-- Sailed and remaining route remain clean.
-- Active segment is highlighted only by drawing the actual RTZ segment; no extension line.
-- Continuous route drawing fix remains.
-- Close zoom settings remain.
-- Editable summary remains.
+Changes from V11:
+- Header now only says: NORMAND MAXIMUS — VOYAGE UPDATE
+- Removed the extra header text/subline
+- Current Update card renamed from COG / SOG / HDG to Course & Speed
+- That card now shows only COG and SOG
+- AVG SOG ETA renamed to Avg speed since midnight
+- Removed the bottom explanatory text under the map
 
 Upload only:
 - index.html
 - README.md optional
 
 After upload:
-1. Wait for GitHub Pages deployment.
+1. Wait for Pages deployment.
 2. Press Ctrl + F5.
-3. Use an incognito/private window if old cached values remain.
