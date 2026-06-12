@@ -1,12 +1,9 @@
-# Voyage View Fast Canvas V18 — Route Map Fit + Sailed/Remaining Fix
+# Voyage View Fast Canvas V19 — Wording + Map Info Size
 
-Changes from V17:
-- Fixed the Route Map title/legend chips so the dark background fits the text properly.
-- Split the title and legend into cleaner separate chips.
-- Simplified and reduced the legend chip size.
-- Fixed the route color issue where blue was visually overriding the sailed orange.
-- Kept only a very subtle active-segment emphasis so sailed vs remaining stay clear.
-- Improved overall clarity of orange sailed vs blue remaining.
+Changes from V18:
+- Changed FINISH to END
+- Made Route Map title and legend a bit larger
+- Moved ETA progress bar slightly further up
 
 Upload only:
 - index.html
